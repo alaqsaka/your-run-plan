@@ -233,7 +233,7 @@ export default function FormPage() {
               We'll notify you as soon as your custom plan is ready. In the meantime, get your running shoes ready!
             </p>
             <Link href="/">
-              <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
+              <Button className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
                 Return to Home
               </Button>
             </Link>
@@ -701,7 +701,7 @@ export default function FormPage() {
                   <Button
                     type="button"
                     onClick={next}
-                    className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md hover:shadow-lg transition-all"
+                    className="bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg transition-all"
                   >
                     {loading ? (
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
