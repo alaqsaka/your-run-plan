@@ -1,6 +1,8 @@
 'use server';
 
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface GeminiResponse {
   generatedText: string;
@@ -146,10 +148,6 @@ export async function storeFormDataAndGeneratePlan(data: any) {
     }
   }
   
-
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-
 export async function getPlanDetail(docId: string) {
 if (!docId) {
 throw new Error('Document ID is required');

@@ -32,18 +32,18 @@ export default function LandingPage() {
             <a href="#features" className="text-gray-700 hover:text-emerald-600 transition-colors">
               Features
             </a>
-            <a href="#testimonials" className="text-gray-700 hover:text-emerald-600 transition-colors">
+            {/* <a href="#testimonials" className="text-gray-700 hover:text-emerald-600 transition-colors">
               Testimonials
             </a>
             <a href="#faq" className="text-gray-700 hover:text-emerald-600 transition-colors">
               FAQ
-            </a>
+            </a> */}
           </nav>
           <Button
             onClick={handleNotifyClick}
             className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md hover:shadow-lg transition-all"
           >
-            Get Early Access
+            Try Now!
           </Button>
         </div>
       </header>
@@ -77,12 +77,12 @@ export default function LandingPage() {
               size="lg"
               className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all group"
             >
-              Join the Waitlist
+              Try now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
 
-          <div className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto text-center">
+          {/* <div className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto text-center">
             <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 shadow-md">
               <p className="text-emerald-600 font-bold text-2xl">5K+</p>
               <p className="text-xs text-gray-500">Runners</p>
@@ -95,7 +95,7 @@ export default function LandingPage() {
               <p className="text-emerald-600 font-bold text-2xl">24/7</p>
               <p className="text-xs text-gray-500">Support</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Decorative running path */}
@@ -157,7 +157,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials section */}
-      <section id="testimonials" className="px-6 py-20 bg-gradient-to-b from-gray-50 to-white">
+      {/* <section id="testimonials" className="px-6 py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h3 className="text-3xl font-bold mb-4 text-gray-900">What Our Runners Say</h3>
@@ -209,7 +209,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call to action */}
       <section className="px-6 py-20 text-center bg-gradient-to-r from-emerald-500 to-green-600 text-white">
@@ -225,10 +225,10 @@ export default function LandingPage() {
             variant="outline"
             className="bg-white text-emerald-600 hover:bg-gray-100 border-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
           >
-            Get Early Access
+            Try Now!
           </Button>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-8 text-sm opacity-90">
+          {/* <div className="mt-12 flex flex-wrap justify-center gap-8 text-sm opacity-90">
             <div className="flex items-center">
               <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -259,12 +259,12 @@ export default function LandingPage() {
               </svg>
               <span>Cancel anytime</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="px-6 py-20 bg-white">
+      {/* <section id="faq" className="px-6 py-20 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h3 className="text-3xl font-bold mb-4 text-gray-900">Frequently Asked Questions</h3>
@@ -301,7 +301,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12 px-8">
