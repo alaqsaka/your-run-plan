@@ -1,103 +1,91 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useRouter } from 'next/navigation';
+
+export default function LandingPage() {
+  const router = useRouter();
+
+  const handleNotifyClick = () => {
+    router.push('/form');
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen bg-white text-gray-900 flex flex-col">
+      <header className="w-full py-6 px-8 flex justify-between items-center border-b border-gray-200">
+        <h1 className="text-2xl font-bold text-gray-900">YourRunPlan</h1>
+        <button
+          onClick={handleNotifyClick}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+        >
+          Get Early Access
+        </button>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <section className="flex flex-col items-center text-center px-6 py-20 max-w-3xl mx-auto">
+        <h2 className="text-4xl font-semibold mb-4 text-gray-900">
+          Personalized AI Running Plans
+        </h2>
+        <p className="text-lg text-gray-600 mb-6">
+          YourRunPlan is your smart running companion — adapting to your pace, goals, and life.
+          No more one-size-fits-all training. We build a plan that fits you.
+        </p>
+        <button
+          onClick={handleNotifyClick}
+          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Join the Waitlist
+        </button>
+      </section>
+
+      <section className="px-6 py-16 bg-gray-50 border-t border-b border-gray-200">
+        <div className="max-w-4xl mx-auto grid gap-12 md:grid-cols-2">
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Smarter Planning</h3>
+            <p className="text-gray-600">
+              AI adjusts your weekly mileage, rest days, and pacing based on your performance and feedback.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Injury Prevention</h3>
+            <p className="text-gray-600">
+              We prioritize sustainable progress — no overtraining or burnout.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Goal-Oriented</h3>
+            <p className="text-gray-600">
+              Whether it's your first 5K or a full marathon, your plan evolves with your target.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Holistic Support</h3>
+            <p className="text-gray-600">
+              Includes guidance on nutrition, mental focus, and recovery — not just miles.
+            </p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </section>
+
+      <section className="px-6 py-16 text-center">
+        <h3 className="text-2xl font-semibold mb-4">Be the First to Try It</h3>
+        <p className="text-gray-600 max-w-xl mx-auto mb-6">
+          We're building YourRunPlan for runners like you. Join now and get early access as soon as we launch.
+        </p>
+        <button
+          onClick={handleNotifyClick}
+          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          Notify Me
+        </button>
+      </section>
+
+      <footer className="w-full border-t border-gray-200 py-6 px-8 text-sm text-gray-500 flex justify-between items-center">
+        <p>&copy; {new Date().getFullYear()} YourRunPlan</p>
+        <div className="space-x-4">
+          <a href="#" className="hover:underline">Privacy</a>
+          <a href="#" className="hover:underline">Terms</a>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
