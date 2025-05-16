@@ -1,22 +1,82 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { ArrowRight, Award, Heart, Shield, Zap } from "lucide-react"
+import { ArrowRight, Award, Calendar, Heart, Medal, Shield, Timer, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { useEffect, useState } from "react"
+import { getGeneratedPlansList } from "./submit-form/actions/submitForm"
+
+// Sample plan data - in a real app, this would come from an API or database
+const samplePlans = [
+  {
+    id: "plan1",
+    title: "New Year's Eve 10K Blast-Off: Beginner's Road to Glory",
+    weeks: 8,
+    difficulty: "Beginner",
+    category: "10K",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    id: "plan2",
+    title: "Half Marathon Hero: Zero to 21K in 12 Weeks",
+    weeks: 12,
+    difficulty: "Intermediate",
+    category: "Half Marathon",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    id: "plan3",
+    title: "5K Speed Builder: Break Your Personal Record",
+    weeks: 6,
+    difficulty: "Advanced",
+    category: "5K",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    id: "plan4",
+    title: "Marathon Master: Complete 42K with Confidence",
+    weeks: 16,
+    difficulty: "Intermediate",
+    category: "Marathon",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+]
 
 export default function LandingPage() {
   const router = useRouter()
+  const [plans, setPlans] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   const handleNotifyClick = () => {
     router.push("/form")
   }
 
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const result = await getGeneratedPlansList();
+        console.log('result', result);
+        if (result.success) {
+          setPlans(result.plans)
+        }
+      } catch (err) {
+        console.error("Failed to load plans:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlans()
+  }, [])
+
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   }
-
+  
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 flex flex-col">
       {/* Header with sports-themed gradient accent */}
@@ -29,15 +89,12 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-6">
           <nav className="hidden md:flex space-x-6 text-sm font-medium">
+            <a href="#plans" className="text-gray-700 hover:text-emerald-600 transition-colors">
+              Plans
+            </a>
             <a href="#features" className="text-gray-700 hover:text-emerald-600 transition-colors">
               Features
             </a>
-            {/* <a href="#testimonials" className="text-gray-700 hover:text-emerald-600 transition-colors">
-              Testimonials
-            </a>
-            <a href="#faq" className="text-gray-700 hover:text-emerald-600 transition-colors">
-              FAQ
-            </a> */}
           </nav>
           <Button
             onClick={handleNotifyClick}
@@ -81,25 +138,73 @@ export default function LandingPage() {
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
-
-          {/* <div className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto text-center">
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 shadow-md">
-              <p className="text-emerald-600 font-bold text-2xl">5K+</p>
-              <p className="text-xs text-gray-500">Runners</p>
-            </div>
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 shadow-md">
-              <p className="text-emerald-600 font-bold text-2xl">98%</p>
-              <p className="text-xs text-gray-500">Completion</p>
-            </div>
-            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-3 shadow-md">
-              <p className="text-emerald-600 font-bold text-2xl">24/7</p>
-              <p className="text-xs text-gray-500">Support</p>
-            </div>
-          </div> */}
         </div>
 
         {/* Decorative running path */}
         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-r from-emerald-200 via-green-300 to-emerald-200 opacity-70 z-0"></div>
+      </section>
+
+      {/* Sample Plans Section */}
+      <section id="plans" className="px-6 py-20 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-bold mb-4 text-gray-900">Popular Training Plans</h3>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Browse our collection of AI-generated training plans or create your own personalized plan.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {plans?.map((plan) => (
+              <Link key={plan.id} href={`/generated-plan/${plan.id}`} className="block group">
+                <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow border border-gray-100 h-full flex flex-col">
+                  <div className="relative h-40 bg-gradient-to-br from-emerald-400 to-green-600 overflow-hidden">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-white text-center p-4">
+                        <h4 className="text-xl font-bold">{plan.plan.category}</h4>
+                        <div className="flex items-center justify-center mt-2">
+                          <Medal className="h-6 w-6 mr-1" />
+                          <span>{plan.plan.difficulty}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex justify-between items-start mb-3">
+                      <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                        {plan.plan.category}
+                      </Badge>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        <span>{plan.plan.weeks.length} weeks</span>
+                      </div>
+                    </div>
+                    <h4 className="text-lg font-semibold mb-2 text-gray-900 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+                      {plan.plan.title}
+                    </h4>
+                    <div className="mt-auto pt-4 flex justify-between items-center">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <Timer className="h-4 w-4 mr-1" />
+                        <span>{plan.plan.weeks.length * 3} workouts</span>
+                      </div>
+                      <span className="text-emerald-600 text-sm font-medium group-hover:underline">View Plan</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Button
+              onClick={handleNotifyClick}
+              className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md hover:shadow-lg transition-all"
+            >
+              Create Your Custom Plan
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </section>
 
       {/* Features section with sports icons */}
@@ -156,61 +261,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials section */}
-      {/* <section id="testimonials" className="px-6 py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl font-bold mb-4 text-gray-900">What Our Runners Say</h3>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Join thousands of satisfied runners who've achieved their goals with YourRunPlan.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                name: "Sarah J.",
-                role: "Marathon Runner",
-                quote:
-                  "After trying multiple training plans, YourRunPlan was the first one that actually adapted to my busy schedule. I shaved 12 minutes off my marathon PR!",
-              },
-              {
-                name: "Michael T.",
-                role: "Beginner Runner",
-                quote:
-                  "As someone new to running, I was intimidated by generic plans. YourRunPlan eased me in perfectly and I just completed my first 10K!",
-              },
-              {
-                name: "Aisha K.",
-                role: "Trail Runner",
-                quote:
-                  "The terrain-specific training recommendations have been game-changing for my trail races. My endurance on hills has improved dramatically.",
-              },
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-md border border-gray-100 flex flex-col">
-                <div className="flex-1">
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
-                </div>
-                <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 mr-3"></div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500">{testimonial.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* Call to action */}
       <section className="px-6 py-20 text-center bg-gradient-to-r from-emerald-500 to-green-600 text-white">
         <div className="max-w-4xl mx-auto">
@@ -227,81 +277,8 @@ export default function LandingPage() {
           >
             Try Now!
           </Button>
-
-          {/* <div className="mt-12 flex flex-wrap justify-center gap-8 text-sm opacity-90">
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>Free 14-day trial</span>
-            </div>
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>No credit card required</span>
-            </div>
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>Cancel anytime</span>
-            </div>
-          </div> */}
         </div>
       </section>
-
-      {/* FAQ Section */}
-      {/* <section id="faq" className="px-6 py-20 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl font-bold mb-4 text-gray-900">Frequently Asked Questions</h3>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Everything you need to know about YourRunPlan</p>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              {
-                question: "How does YourRunPlan adapt to my fitness level?",
-                answer:
-                  "Our AI analyzes your running data, perceived effort, and recovery metrics to continuously adjust your training intensity, volume, and recovery periods for optimal progress.",
-              },
-              {
-                question: "Can I use YourRunPlan with my existing fitness tracker?",
-                answer:
-                  "Yes! YourRunPlan integrates with popular fitness trackers and running apps to automatically import your running data and provide seamless recommendations.",
-              },
-              {
-                question: "What if I miss a scheduled run?",
-                answer:
-                  "No problem. YourRunPlan automatically adjusts your future workouts based on missed sessions, ensuring your training plan remains effective without overloading you.",
-              },
-              {
-                question: "Is YourRunPlan suitable for beginners?",
-                answer:
-                  "Whether you're just starting your running journey or training for an ultramarathon, YourRunPlan creates personalized plans appropriate for your experience level.",
-              },
-            ].map((faq, index) => (
-              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <h4 className="text-lg font-semibold mb-2 text-gray-900">{faq.question}</h4>
-                <p className="text-gray-600">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12 px-8">

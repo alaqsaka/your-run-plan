@@ -1,6 +1,6 @@
 'use server';
 
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -79,12 +79,14 @@ Goals:
 - Make the plan realistic for their fitness level, time availability, pace, recovery method, and training motivations.
 
 Requirements:
-- Generate a UNIQUE and motivating training plan TITLE based on the user's profile, goal, and personality.
+- Generate a UNIQUE and motivating training plan TITLE, CATEGORY, DIFFICULTY based on the user's profile, goal, and personality.
 - Output a list of WEEKS, each containing 7 days with a labeled \`day\`, \`activity\`, and \`details\`.
 
 Output JSON format:
 {
   "title": "Generated unique and motivating plan title",
+  "category": "10K",
+  "difficulty": "Beginner",
   "weeks": [
     {
       "week": 1,
@@ -169,3 +171,22 @@ throw new Error('Plan data is missing');
 return data.plan;
 }
 
+
+export const getGeneratedPlansList = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "generatedPlans"))
+    const plans = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        plan: data.plan,
+        createdAt: data.createdAt?.toDate().toISOString() ?? null, // convert Firestore Timestamp
+      }
+    })
+
+    return { success: true, plans }
+  } catch (error) {
+    console.error("Error fetching plans:", error)
+    return { success: false, error: error.message }
+  }
+}
