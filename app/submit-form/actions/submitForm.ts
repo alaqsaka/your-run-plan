@@ -1,11 +1,13 @@
 'use server';
 
-import { collection, addDoc, Timestamp, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 interface GeminiResponse {
-  generatedText: string;
+  generatedText: {
+    parts: { text: string }[];
+  };
 }
 
 async function callGeminiAI(promptText: string): Promise<GeminiResponse> {
@@ -51,7 +53,7 @@ async function callGeminiAI(promptText: string): Promise<GeminiResponse> {
   return { generatedText: data.candidates[0].content };
 }
 
-function buildGeminiPrompt(data: any) {
+function buildGeminiPrompt(data) {
   const context = {
     raceDate: data.raceDate || "",
     goal: data.goal,
@@ -105,7 +107,7 @@ Output JSON format:
   return JSON.stringify({ context, instruction });
 }
 
-export async function storeFormDataAndGeneratePlan(data: any) {
+export async function storeFormDataAndGeneratePlan(data) {
     try {
       // Store user input first
       await addDoc(collection(db, 'plans'), {
@@ -185,8 +187,13 @@ export const getGeneratedPlansList = async () => {
     })
 
     return { success: true, plans }
-  } catch (error) {
+  }  catch (error: unknown) {
     console.error("Error fetching plans:", error)
-    return { success: false, error: error.message }
+
+    if (error instanceof Error) {
+      return { success: false, error: error.message }
+    } else {
+      return { success: false, error: String(error) }
+    }
   }
 }

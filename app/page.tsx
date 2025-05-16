@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useRouter } from "next/navigation"
@@ -24,7 +25,7 @@ export default function LandingPage() {
         const result = await getGeneratedPlansList()
         console.log("result", result)
         if (result.success) {
-          setPlans(result.plans)
+          setPlans(result.plans as any)
         }
       } catch (err) {
         console.error("Failed to load plans:", err)
@@ -532,7 +533,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto mb-8"
           >
-            We're building YourRunPlan for passionate runners like you. Join our waitlist today and be the first to
+            We&apos;re building YourRunPlan for passionate runners like you. Join our waitlist today and be the first to
             experience the future of personalized training.
           </motion.p>
           <motion.div

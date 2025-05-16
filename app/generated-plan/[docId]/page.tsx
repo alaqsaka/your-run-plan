@@ -1,5 +1,5 @@
 import { getPlanDetail } from "@/app/submit-form/actions/submitForm"
-import { ArrowLeft, Calendar, Clock, Dumbbell, Footprints, Heart, Home, Info, Leaf, Moon } from 'lucide-react'
+import { Calendar, Clock, Dumbbell, Footprints, Heart, Home, Info, Leaf, Moon } from 'lucide-react'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
