@@ -215,7 +215,7 @@ export default async function Page({ params }: { params: Params }) {
               </div>
 
               {/* Weekly Tips */}
-              {/* <div className="mt-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl shadow-md p-6 text-white">
+              <div className="mt-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl shadow-md p-6 text-white">
                 <h3 className="text-xl font-semibold mb-3">Week {week.week} Tips</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">
@@ -261,7 +261,7 @@ export default async function Page({ params }: { params: Params }) {
                     </p>
                   </li>
                 </ul>
-              </div> */}
+              </div>
             </TabsContent>
           ))}
         </Tabs>
