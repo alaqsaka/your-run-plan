@@ -23,7 +23,6 @@ export default function LandingPage() {
     const fetchPlans = async () => {
       try {
         const result = await getGeneratedPlansList()
-        console.log("result", result)
         if (result.success) {
           setPlans(result.plans as any)
         }

@@ -12,7 +12,7 @@ export default async function Page({
 }: {
   params: { docId: string }
 }) {
-  const { docId } = await params
+  const { docId } = params
 
   const planDetail = await getPlanDetail(docId)
 

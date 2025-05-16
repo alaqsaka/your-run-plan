@@ -90,7 +90,6 @@ export default function FormPage() {
     setLoading(true)
     try {
       const response = await storeFormDataAndGeneratePlan(data)
-      console.log("Form data stored successfully:", response)
       setIsComplete(true)
       toast.success("Form submitted successfully!")
     } catch (error) {

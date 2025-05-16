@@ -121,8 +121,6 @@ export async function storeFormDataAndGeneratePlan(data) {
       // Call Gemini AI to generate the plan
       const { generatedText } = await callGeminiAI(promptText);
   
-      console.log('Raw generatedText:', generatedText);
-  
       // Extract the text content from parts array
       const rawText = generatedText.parts?.[0]?.text;
   
