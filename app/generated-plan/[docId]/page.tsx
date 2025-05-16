@@ -7,12 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-export default async function Page({
-  params,
-}: {
-  params: { docId: string }
-}) {
-  const { docId } = params
+type Params = Promise<{ docId: string }>;
+
+export default async function Page({ params }: { params: Params }) {
+  const { docId } = await params;
 
   const planDetail = await getPlanDetail(docId)
 
