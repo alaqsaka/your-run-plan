@@ -6,7 +6,7 @@ import PlansPage from "./PlansPageInner"
 
 export default function PlansPageWrapper() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <PlansPage />
     </Suspense>
   )
