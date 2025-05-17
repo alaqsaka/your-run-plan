@@ -1,6 +1,6 @@
 'use server';
 
-import { collection, addDoc, Timestamp, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, getDocs, query, orderBy, limit, startAfter } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -172,33 +172,30 @@ return data.plan;
 }
 
 
-export const getGeneratedPlansList = async (limitCount = 4) => {
+export const getGeneratedPlansList = async (limitCount = 4, startAfterId: string | null = null) => {
   try {
-    const q = query(
+    const baseQuery = query(
       collection(db, "generatedPlans"),
       orderBy("createdAt", "desc"),
+      ...(startAfterId
+        ? [startAfter(await getDoc(doc(db, "generatedPlans", startAfterId)))]
+        : []),
       limit(limitCount)
     )
 
-    const snapshot = await getDocs(q)
+    const snapshot = await getDocs(baseQuery)
 
-    const plans = snapshot.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        plan: data.plan,
-        createdAt: data.createdAt?.toDate().toISOString() ?? null,
-      }
-    })
+    const plans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      plan: doc.data().plan,
+      createdAt: doc.data().createdAt?.toDate().toISOString() ?? null,
+    }))
 
-    return { success: true, plans }
-  } catch (error: unknown) {
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1]?.id ?? null
+
+    return { success: true, plans, lastVisible }
+  } catch (error) {
     console.error("Error fetching plans:", error)
-
-    if (error instanceof Error) {
-      return { success: false, error: error.message }
-    } else {
-      return { success: false, error: String(error) }
-    }
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }

@@ -288,7 +288,7 @@ export default function FormPage() {
                   </p>
 
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-                    <Link href={`/generated-plan/${generatedPlanId}`}>
+                    <Link href={`/plan/${generatedPlanId}`}>
                       <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:cursor-pointer text-white px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg">
                         View Your Running Plan
                         <ArrowRight className="ml-2 h-5 w-5" />
