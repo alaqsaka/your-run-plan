@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 export default function Footer () {
   return (
    <>
-     <footer className="bg-gray-900 text-gray-300 py-12 px-8">
+     <div className="bg-gray-900 text-gray-300 py-12 px-8">
           <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -97,7 +97,7 @@ export default function Footer () {
             <p>&copy; {new Date().getFullYear()} YourRunPlan. All rights reserved.</p>
             <p className="mt-4 md:mt-0">Made with ❤️ for runners everywhere</p>
           </motion.div>
-    </footer>
+    </div>
    </>
   )
 }
