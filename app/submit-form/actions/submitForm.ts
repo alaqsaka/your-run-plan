@@ -1,6 +1,6 @@
 'use server';
 
-import { collection, addDoc, Timestamp, getDocs } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -172,20 +172,27 @@ return data.plan;
 }
 
 
-export const getGeneratedPlansList = async () => {
+export const getGeneratedPlansList = async (limitCount = 4) => {
   try {
-    const snapshot = await getDocs(collection(db, "generatedPlans"))
+    const q = query(
+      collection(db, "generatedPlans"),
+      orderBy("createdAt", "desc"),
+      limit(limitCount)
+    )
+
+    const snapshot = await getDocs(q)
+
     const plans = snapshot.docs.map((doc) => {
       const data = doc.data()
       return {
         id: doc.id,
         plan: data.plan,
-        createdAt: data.createdAt?.toDate().toISOString() ?? null, // convert Firestore Timestamp
+        createdAt: data.createdAt?.toDate().toISOString() ?? null,
       }
     })
 
     return { success: true, plans }
-  }  catch (error: unknown) {
+  } catch (error: unknown) {
     console.error("Error fetching plans:", error)
 
     if (error instanceof Error) {
