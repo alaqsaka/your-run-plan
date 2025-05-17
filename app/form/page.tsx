@@ -15,32 +15,40 @@ import { Button } from "@/components/ui/button"
 import { storeFormDataAndGeneratePlan } from "../submit-form/actions/submitForm"
 import { useState } from "react"
 import { toast } from "sonner"
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader, MonitorIcon as Running } from "lucide-react"
+import { ArrowLeft,  CheckCircle2, MonitorIcon as Running } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
+import ProgressIndicator from "@/components/progress-indicator"
+import NavigationButtons from "@/components/navigation-buttons"
+import { formSchema } from "@/lib/schema"
 
-const formSchema = z.object({
-  goal: z.string().min(1, "Please select a running goal"),
-  fitnessLevel: z.string().min(1, "Please select your fitness level"),
-  daysPerWeek: z.string().min(1, "Please select days per week"),
-  timePerRun: z.string().min(1, "Please enter time per run"),
-  injuries: z.string().optional(),
-  environment: z.string().min(1, "Please select your preferred environment"),
-  pace: z.string().min(1, "Please enter your typical pace"),
-  motivations: z.array(z.string()).min(1, "Please select at least one motivation"),
-  nutrition: z.string().min(1, "Please select your nutrition habit"),
-  additionalInfo: z.string().optional(),
-  raceDate: z.string().optional(),
-  prefersCrossTraining: z.boolean().optional(),
-  crossTrainingActivities: z.array(z.string()).optional(),
-  sleepQuality: z.string().optional(),
-  recoveryTools: z.array(z.string()).optional(),
-})
+const loadingStates = [
+  {
+    text: "Saving your inputs...",
+  },
+  {
+    text: "Your inputs have been saved successfully!",
+  },
+  {
+    text: "Creating your personalized running plan...",
+  },
+  {
+    text: "Almost there, finalizing your plan...",
+  },
+  {
+    text: "Just a moment, setting things up for you...",
+  },
+  {
+    text: "Loading your customized experience...",
+  },
+  {
+    text: "Getting everything ready for you...",
+  },
+  {
+    text: "All set! Preparing to start...",
+  },
+];
 
-type FormData = z.infer<typeof formSchema>
-
-// Define the steps
 const steps = [
   {
     id: "goals",
@@ -68,6 +76,8 @@ const steps = [
     fields: ["nutrition", "additionalInfo"],
   },
 ]
+
+type FormData = z.infer<typeof formSchema>
 
 export default function FormPage() {
   const [loading, setLoading] = useState(false)
@@ -100,37 +110,7 @@ export default function FormPage() {
     }
   }
 
-  // Check if fields in the current step are valid
-  const validateCurrentStep = async () => {
-    const fields = steps[currentStep].fields
-    const output = await form.trigger(fields as any, { shouldFocus: true })
-    return output
-  }
 
-  const next = async () => {
-    const isValid = await validateCurrentStep()
-
-    if (!isValid) {
-      return
-    }
-
-    if (currentStep < steps.length - 1) {
-      setPreviousStep(currentStep)
-      setDirection(1)
-      setCurrentStep((step) => step + 1)
-    } else {
-      // If on last step, submit the form
-      await form.handleSubmit(processForm)()
-    }
-  }
-
-  const prev = () => {
-    if (currentStep > 0) {
-      setPreviousStep(currentStep)
-      setDirection(-1)
-      setCurrentStep((step) => step - 1)
-    }
-  }
 
   const currentFields = steps[currentStep].fields
 
@@ -182,40 +162,7 @@ export default function FormPage() {
         </div>
 
         {/* Progress indicator */}
-        <div className="mb-10">
-          <div className="flex justify-between items-center w-full mb-4">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center">
-                <div
-                  className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center font-medium text-sm relative",
-                    currentStep > index
-                      ? "bg-emerald-600 text-white"
-                      : currentStep === index
-                        ? "bg-emerald-100 text-emerald-600 ring-2 ring-emerald-600 ring-offset-2"
-                        : "bg-gray-100 text-gray-500",
-                  )}
-                >
-                  {currentStep > index ? <CheckCircle2 className="h-6 w-6" /> : <span>{index + 1}</span>}
-                </div>
-                <span
-                  className={cn(
-                    "text-xs mt-2 font-medium hidden md:block",
-                    currentStep >= index ? "text-emerald-600" : "text-gray-500",
-                  )}
-                >
-                  {step.name}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-500 to-green-600 transition-all duration-300 ease-in-out"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        <ProgressIndicator steps={steps} currentStep={currentStep}/>
 
         {isComplete ? (
           <motion.div
@@ -684,41 +631,7 @@ export default function FormPage() {
                 </AnimatePresence>
 
                 {/* Navigation buttons */}
-                <div className="flex justify-between pt-6 border-t border-gray-100">
-                  <Button
-                    type="button"
-                    onClick={prev}
-                    disabled={currentStep === 0}
-                    variant="outline"
-                    className={cn(
-                      "border-emerald-600 text-emerald-600 hover:bg-emerald-50",
-                      currentStep === 0 && "opacity-50 cursor-not-allowed",
-                    )}
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Previous
-                  </Button>
-
-                  <Button
-                    type="button"
-                    onClick={next}
-                    className="bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg transition-all"
-                  >
-                    {loading ? (
-                      <Loader className="mr-2 h-4 w-4 animate-spin" />
-                    ) : currentStep === steps.length - 1 ? (
-                      <>
-                        Submit
-                        <CheckCircle2 className="ml-2 h-4 w-4" />
-                      </>
-                    ) : (
-                      <>
-                        Next
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                </div>
+                <NavigationButtons steps={steps} currentStep={currentStep} setCurrentStep={setCurrentStep} form={form} processForm={processForm} loading={loading}/>
               </form>
             </Form>
           </div>
