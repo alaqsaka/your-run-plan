@@ -4,7 +4,7 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+import type * as z from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroupItem, RadioGroup } from "@/components/ui/radio-group"
@@ -13,41 +13,49 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { storeFormDataAndGeneratePlan } from "../submit-form/actions/submitForm"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { ArrowLeft,  CheckCircle2, MonitorIcon as Running } from "lucide-react"
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader, MonitorIcon as Running } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import ProgressIndicator from "@/components/progress-indicator"
-import NavigationButtons from "@/components/navigation-buttons"
 import { formSchema } from "@/lib/schema"
+import NavigationButtons from "@/components/navigation-buttons"
 
 const loadingStates = [
   {
     text: "Saving your inputs...",
+    icon: "💾",
   },
   {
     text: "Your inputs have been saved successfully!",
+    icon: "✅",
   },
   {
     text: "Creating your personalized running plan...",
+    icon: "🏃",
   },
   {
-    text: "Almost there, finalizing your plan...",
+    text: "Analyzing your fitness level...",
+    icon: "📊",
   },
   {
-    text: "Just a moment, setting things up for you...",
+    text: "Calculating optimal training schedule...",
+    icon: "📅",
   },
   {
-    text: "Loading your customized experience...",
+    text: "Designing your workout routines...",
+    icon: "💪",
   },
   {
-    text: "Getting everything ready for you...",
+    text: "Optimizing recovery periods...",
+    icon: "🧘",
   },
   {
-    text: "All set! Preparing to start...",
+    text: "Finalizing your plan...",
+    icon: "🎯",
   },
-];
+]
 
 const steps = [
   {
@@ -85,6 +93,10 @@ export default function FormPage() {
   const [previousStep, setPreviousStep] = useState(0)
   const [direction, setDirection] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loadingStep, setLoadingStep] = useState(0)
+  const [generatedPlanId, setGeneratedPlanId] = useState<string | null>(null)
+  const [loadingComplete, setLoadingComplete] = useState(false)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -96,23 +108,75 @@ export default function FormPage() {
     mode: "onChange",
   })
 
+  // Handle loading steps animation
+  useEffect(() => {
+    if (isSubmitting && !loadingComplete) {
+      const interval = setInterval(() => {
+        if (loadingStep < loadingStates.length - 1) {
+          setLoadingStep((prev) => prev + 1)
+        } else {
+          clearInterval(interval)
+          setLoadingComplete(true)
+        }
+      }, 1500) // Change step every 1.5 seconds
+
+      return () => clearInterval(interval)
+    }
+  }, [isSubmitting, loadingStep, loadingComplete])
+
   const processForm = async (data: FormData) => {
     setLoading(true)
+    setIsSubmitting(true)
+
     try {
+      // Simulate API delay for the loading animation to show
       const response = await storeFormDataAndGeneratePlan(data)
+
+      console.log('response', response);
+      setGeneratedPlanId(response?.planId as string)
       setIsComplete(true)
-      toast.success("Form submitted successfully!")
+      toast.success("Your running plan has been created successfully!")
+
     } catch (error) {
       console.error("Error storing form data:", error)
-      toast.error("There was an error submitting the form.")
+      toast.error("There was an error creating your plan.")
+      setIsSubmitting(false)
     } finally {
       setLoading(false)
     }
   }
 
+  // Check if fields in the current step are valid
+  const validateCurrentStep = async () => {
+    const fields = steps[currentStep].fields
+    const output = await form.trigger(fields as any, { shouldFocus: true })
+    return output
+  }
 
+  const next = async () => {
+    const isValid = await validateCurrentStep()
 
-  const currentFields = steps[currentStep].fields
+    if (!isValid) {
+      return
+    }
+
+    if (currentStep < steps.length - 1) {
+      setPreviousStep(currentStep)
+      setDirection(1)
+      setCurrentStep((step) => step + 1)
+    } else {
+      // If on last step, submit the form
+      await form.handleSubmit(processForm)()
+    }
+  }
+
+  const prev = () => {
+    if (currentStep > 0) {
+      setPreviousStep(currentStep)
+      setDirection(-1)
+      setCurrentStep((step) => step - 1)
+    }
+  }
 
   // Animation variants
   const variants = {
@@ -128,6 +192,12 @@ export default function FormPage() {
       x: direction < 0 ? 500 : -500,
       opacity: 0,
     }),
+  }
+
+  const loadingVariants = {
+    initial: { scale: 0.8, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0.8, opacity: 0 },
   }
 
   return (
@@ -161,10 +231,75 @@ export default function FormPage() {
           </p>
         </div>
 
-        {/* Progress indicator */}
-        <ProgressIndicator steps={steps} currentStep={currentStep}/>
+        {!isSubmitting && <ProgressIndicator steps={steps} currentStep={currentStep} />}
 
-        {isComplete ? (
+        {isSubmitting ? (
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 text-center">
+            <div className="flex flex-col items-center justify-center">
+              {/* Loading animation container */}
+              {!loadingComplete && (
+                <div className="relative h-60 w-full mb-8">
+                  {/* Progress bar */}
+                  <div className="absolute top-0 left-0 right-0 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-emerald-500 to-green-600"
+                      initial={{ width: "0%" }}
+                      animate={{ width: `${((loadingStep + 1) / loadingStates.length) * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+
+                  {/* Loading steps */}
+                  <div className="absolute top-32 left-0 right-0">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={loadingStep}
+                        variants={loadingVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.3 }}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="text-4xl mb-4">{loadingStates[loadingStep].icon}</div>
+                        <p className="text-lg font-medium text-gray-800">{loadingStates[loadingStep].text}</p>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Step {loadingStep + 1} of {loadingStates.length}
+                        </p>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
+
+              {/* Loading complete view */}
+              {loadingComplete && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-emerald-100 mb-6">
+                    <CheckCircle2 className="h-10 w-10 text-emerald-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-4 text-emerald-700">Your Plan is Ready!</h2>
+                  <p className="text-lg text-gray-600 mb-8">
+                    We&apos;ve created your personalized running plan based on your goals and preferences.
+                  </p>
+
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+                    <Link href={`/generated-plan/${generatedPlanId}`}>
+                      <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:cursor-pointer text-white px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg">
+                        View Your Running Plan
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </motion.div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        ) : isComplete ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,7 +316,7 @@ export default function FormPage() {
               We&apos;ll notify you as soon as your custom plan is ready. In the meantime, get your running shoes ready!
             </p>
             <Link href="/">
-              <Button className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
+              <Button className="bg-gradient-to-r from-emerald-500 to-green-600 hover:cursor-pointer text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
                 Return to Home
               </Button>
             </Link>

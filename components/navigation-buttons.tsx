@@ -48,7 +48,7 @@ const NavigationButtons = ({currentStep, setCurrentStep, form, steps, loading, p
       disabled={currentStep === 0}
       variant="outline"
       className={cn(
-        "border-emerald-600 text-emerald-600 hover:bg-emerald-50",
+        "border-emerald-600 text-emerald-600 hover:bg-emerald-50 hover:cursor-pointer",
         currentStep === 0 && "opacity-50 cursor-not-allowed",
       )}
     >
@@ -59,7 +59,7 @@ const NavigationButtons = ({currentStep, setCurrentStep, form, steps, loading, p
     <Button
       type="button"
       onClick={next}
-      className="bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg transition-all"
+      className="bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg transition-all hover:cursor-pointer"
     >
       {loading ? (
         <Loader className="mr-2 h-4 w-4 animate-spin" />
