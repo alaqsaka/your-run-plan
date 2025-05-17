@@ -724,19 +724,6 @@ export default function FormPage() {
           </div>
         )}
       </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-12">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 mr-2"></div>
-            <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-500">
-              YourRunPlan
-            </h3>
-          </div>
-          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} YourRunPlan. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   )
 }
